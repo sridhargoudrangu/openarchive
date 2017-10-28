@@ -1,0 +1,27 @@
+#
+#  Copyright (c) 2006-2011 Commvault systems, Inc. <http://www.commvault.com>.
+#  This file is part of OpenArchive.
+
+#  This file is licensed to you under your choice of the GNU Lesser
+#  General Public License, version 1 or any later version (LGPLv3 or
+#  later), or the GNU General Public License, version 2 (GPLv2), in all
+#  cases as published by the Free Software Foundation.
+#
+#First argument will be the file name
+#
+if [ $# -lt 1 ]; then
+    echo "Usage: $0 <file path>"
+    exit 1
+fi
+
+path=$1
+if [ ! -f $path ]; then
+     echo "Not a valid file path"
+     exit 1
+fi
+
+stat $path | sed -n '2p'
+getfattr -e hex -n trusted.openarchive.file-size  $path 2>/dev/null | sed -n '2p'
+getfattr -e hex -n trusted.openarchive.num-blocks $path 2>/dev/null | sed -n '2p'
+getfattr -e hex -n trusted.openarchive.blocksize  $path 2>/dev/null | sed -n '2p'
+getfattr -e hex -n trusted.openarchive.uuid       $path 2>/dev/null | sed -n '2p'
