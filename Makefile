@@ -5,8 +5,7 @@ LIBEXT  = .so
 PWD         := $(shell pwd)
 INC         := -I /usr/local/include -I include -I /usr/src/glusterfs/api/src\
                -I /usr/src/glusterfs/xlators/features/archive/src\
-               -I /usr/include/glusterfs/api -I $(PWD)/archd/gen-cpp\
-               -I $(PWD)/archd/server -I $(PWD)/archd/client
+               -I /usr/include/glusterfs/api -I $(PWD)/cli/include
 
 LIBS_PATH   := -L /usr/local/lib/ -L $(PWD) -L $(PWD)/archd/client 
 LIBS        := -lboost_system -lboost_thread -lpthread -lboost_filesystem -ldl\
@@ -25,6 +24,8 @@ prefix      ?= /usr/local
 headers        = $(wildcard include/*.h)
 lib_hdr        = $(wildcard src/*.h)
 lib_src        = $(wildcard src/*.cpp)
+cli_src        = $(wildcard cli/*.c)
+cli_headers    = $(wildcard cli/include/*.h)
 
 lib_libs       = $(LIBS) 
 extra_dist     = Makefile README.md
@@ -33,27 +34,34 @@ dist_files     = $(headers) $(lib_hdr) $(lib_src)
 .PHONY: all clean dist install default
 default:all
 
-all: $(PACKAGE)$(LIBEXT) 
+CLI    = cli/openarchive
+all: $(PACKAGE)$(LIBEXT) $(CLI)
 
 $(PACKAGE)$(LIBEXT): $(patsubst %.cpp, %.o, $(lib_src)) Makefile
 	$(CXX) -shared $(CXXFLAGS) $(LDFLAGS) $(filter-out Makefile,$^)\
         $(lib_libs) -o $@
 
 %.o : %.cpp Makefile
-	$(CXX) $(CXXFLAGS) -MD -c $< -o $(patsubst %.cpp, %.o, $<)	
+	$(CXX) $(CXXFLAGS) -MD -c $< -o $(patsubst %.cpp, %.o, $<)
+
+$(CLI): $(cli_src) Makefile
+	$(CXX) $(CXXDFLAGS) $(LDFLAGS) $(INC) -MD $(cli_src) $(lib_libs) -o $@
 
 clean: 
-	rm -f src/*.o src/*.d
+	rm -f src/*.o src/*.d cli/*.d
 	rm -f $(PACKAGE)$(LIBEXT)
+	rm -f $(CLI)
 
 install:
 	mkdir -p $(DESTDIR)/usr/local/lib
 	mkdir -p $(DESTDIR)/etc/ld.so.conf.d
 	install -m 0755 $(PACKAGE)$(LIBEXT) $(DESTDIR)/usr/local/lib/
+	install -m 0755 $(CLI) $(DESTDIR)/usr/local/bin/
 	echo "/usr/local/lib" > $(DESTDIR)/etc/ld.so.conf.d/archivestore.conf
+	ldconfig
 
 ifneq "$(MAKECMDGOALS)" "clean"
 deps  = $(patsubst %.cpp, %.d, $(lib_src))
-deps += $(patsubst %.c, %d, $(app_src)) 
+deps += $(patsubst %.c, %d, $(cli_src)) 
 -include $(deps)
 endif
