@@ -1310,7 +1310,7 @@ namespace openarchive
         {
             std::string dir = openarchive::cfgparams::get_log_dir();
             std::string log_file = "cvlt_openbackup";
-            int32_t log_level = 3;
+            int32_t log_level = 1;
  
             if (fptrs.enable_logging (dir.c_str(), log_file.c_str(), 
                                       log_level) < 0) {
