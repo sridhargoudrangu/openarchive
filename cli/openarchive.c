@@ -195,7 +195,7 @@ int main(int argc, char *argv[ ])
     archstore_desc_t store_desc;
     archstore_methods_t arch_methods;
     get_archstore_methods_t get_archstore_methods;
-    char *app = strdupa (argv[0]);
+    char *app = strdup (argv[0]);
     openarchive_args_type_t args_type;
     void *args_ptr=NULL;
    

@@ -7,7 +7,7 @@ INC         := -I /usr/local/include -I include -I /usr/src/glusterfs/api/src\
                -I /usr/src/glusterfs/xlators/features/archive/src\
                -I /usr/include/glusterfs/api -I $(PWD)/cli/include
 
-LIBS_PATH   := -L /usr/local/lib/ -L $(PWD) -L $(PWD)/archd/client 
+LIBS_PATH   := -L /usr/local/lib/ -L $(PWD)
 LIBS        := -lboost_system -lboost_thread -lpthread -lboost_filesystem -ldl\
                -lboost_program_options -lboost_log -lboost_log_setup -luuid
 
@@ -45,7 +45,7 @@ $(PACKAGE)$(LIBEXT): $(patsubst %.cpp, %.o, $(lib_src)) Makefile
 	$(CXX) $(CXXFLAGS) -MD -c $< -o $(patsubst %.cpp, %.o, $<)
 
 $(CLI): $(cli_src) Makefile
-	$(CXX) $(CXXDFLAGS) $(LDFLAGS) $(INC) -MD $(cli_src) $(lib_libs) -o $@
+	$(C) $(CFLAGS) -MD $(filter-out Makefile,$^) -ldl -lpthread -o $@
 
 clean: 
 	rm -f src/*.o src/*.d cli/*.d
