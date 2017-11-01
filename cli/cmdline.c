@@ -29,7 +29,7 @@ void usage (const char *app)
                      "following products: \n");
     fprintf (stderr, "\t\tglusterfs\n");
     fprintf (stderr, "\t\t\tstore information is volume name\n\n");
-    fprintf (stderr, "\t\tCommvault\n");
+    fprintf (stderr, "\t\tcommvault\n");
     fprintf (stderr, "\t\t\tstore information will be in following format:\n");
     fprintf (stderr, "\t\t\tcc=2:cn=node1:ph=node2:pp=8400:at=29:in=Instance001:"
                      "bs=idm:sc=arch:ji=0:jt=full-backup:ns=1\n");
