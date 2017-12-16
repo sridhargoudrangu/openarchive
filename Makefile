@@ -54,11 +54,13 @@ clean:
 
 install:
 	mkdir -p $(DESTDIR)/usr/local/lib
+	mkdir -p $(DESTDIR)/usr/local/bin
 	mkdir -p $(DESTDIR)/etc/ld.so.conf.d
+	mkdir -p $(DESTDIR)/usr/include/openarchive
+	cp -f $(PWD)/include/* $(DESTDIR)/usr/include/openarchive
 	install -m 0755 $(PACKAGE)$(LIBEXT) $(DESTDIR)/usr/local/lib/
 	install -m 0755 $(CLI) $(DESTDIR)/usr/local/bin/
 	echo "/usr/local/lib" > $(DESTDIR)/etc/ld.so.conf.d/archivestore.conf
-	ldconfig
 
 ifneq "$(MAKECMDGOALS)" "clean"
 deps  = $(patsubst %.cpp, %.d, $(lib_src))
